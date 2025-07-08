@@ -17,36 +17,36 @@ const MONGO_URL = process.env.MONGO_URL;
 
 const app = express();
 
-// ✅ Correct CORS middleware (only once)
+// ✅ CORS for frontend & dashboard
 app.use(
   cors({
     origin: [
       "https://zerodha-invest-app-frontend.onrender.com",
-      "https://zerodha-invest-app.onrender.com"
+      "https://zerodha-invest-app-dashboard.onrender.com"
     ],
     credentials: true,
   })
 );
 
-// ✅ Middlewares
+// ✅ Middleware
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// ✅ Session middleware (important for auth!)
+// ✅ Session middleware
 app.use(
   session({
-    secret: "some_secret_key", // 👉 put this in .env for production
+    secret: process.env.SESSION_SECRET || "some_secret_key",
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,         // ✅ Needed for HTTPS (Render)
-      sameSite: "none",     // ✅ Required for cross-origin cookies
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   })
 );
 
-// ✅ Auth route
+// ✅ Auth routes
 app.use("/", authRoute);
 
 // ✅ Data routes
@@ -84,7 +84,7 @@ app.post("/newOrder", async (req, res) => {
   }
 });
 
-// ✅ Connect to MongoDB
+// ✅ DB Connection
 mongoose
   .connect(MONGO_URL, {
     useNewUrlParser: true,
