@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
 const { HoldingsModel } = require("./model/HoldingsModel");
 const { PositionsModel } = require("./model/PositionsModel");
@@ -16,29 +17,39 @@ const MONGO_URL = process.env.MONGO_URL;
 
 const app = express();
 
-// ✅ CORS setup before any route or body parser
+// ✅ Correct CORS middleware (only once)
 app.use(
   cors({
-    origin: ["https://zerodha-invest-app-frontend.onrender.com", "https://zerodha-invest-app.onrender.com"],
-    credentials: true,
-  })
-);
-app.use(
-  cors({
-    origin: true,
+    origin: [
+      "https://zerodha-invest-app-frontend.onrender.com",
+      "https://zerodha-invest-app.onrender.com"
+    ],
     credentials: true,
   })
 );
 
-
-// ✅ Middleware
+// ✅ Middlewares
 app.use(cookieParser());
-app.use(bodyParser.json()); // or app.use(express.json());
+app.use(bodyParser.json());
+
+// ✅ Session middleware (important for auth!)
+app.use(
+  session({
+    secret: "some_secret_key", // 👉 put this in .env for production
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: true,         // ✅ Needed for HTTPS (Render)
+      sameSite: "none",     // ✅ Required for cross-origin cookies
+    },
+  })
+);
 
 // ✅ Auth route
 app.use("/", authRoute);
 
-// ✅ Routes
+// ✅ Data routes
 app.get("/allHoldings", async (req, res) => {
   try {
     const holdings = await HoldingsModel.find({});
@@ -73,15 +84,16 @@ app.post("/newOrder", async (req, res) => {
   }
 });
 
-// ✅ Connect to DB and start server
-mongoose.connect(MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+// ✅ Connect to MongoDB
+mongoose
+  .connect(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("✅ MongoDB connected");
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
