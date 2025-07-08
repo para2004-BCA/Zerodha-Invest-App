@@ -14,36 +14,37 @@ const Login = () => {
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
-    setInputValue({
-      ...inputValue,
-      [name]: value,
-    });
+    setInputValue({ ...inputValue, [name]: value });
   };
 
-  const handleError = (err) => toast.error(err, { position: "bottom-left" });
-  const handleSuccess = (msg) => toast.success(msg, { position: "bottom-left" });
+  const handleError = (err) =>
+    toast.error(err, { position: "bottom-left" });
+
+  const handleSuccess = (msg) =>
+    toast.success(msg, { position: "bottom-right" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, data, {
-  withCredentials: true
-});
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/login`,
+        inputValue,
+        { withCredentials: true }
+      );
 
+      const { success, message } = response.data;
 
-      const { success, message } = data;
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
           window.location.href = "https://zerodha-invest-app.onrender.com";
-
         }, 1000);
       } else {
         handleError(message);
       }
     } catch (error) {
       console.error(error);
-      handleError("Login failed. Please try again.");
+      handleError("Login failed!");
     }
 
     setInputValue({ email: "", password: "" });
@@ -52,7 +53,7 @@ const Login = () => {
   return (
     <div className="form_container">
       <h2>Login Account</h2>
-      <form className="onfrom" onSubmit={handleSubmit}>
+      <form className="onform" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email</label>
           <input
@@ -75,7 +76,7 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit">Login</button>
         <span>
           Don't have an account? <Link to="/signup">Signup</Link>
         </span>

@@ -21,14 +21,16 @@ const Signup = () => {
     });
   };
 
-  const handleError = (err) => toast.error(err, { position: "bottom-left" });
-  const handleSuccess = (msg) => toast.success(msg, { position: "bottom-right" });
+  const handleError = (err) =>
+    toast.error(err, { position: "bottom-left" });
+  const handleSuccess = (msg) =>
+    toast.success(msg, { position: "bottom-right" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/signup`,
+        `${process.env.REACT_APP_API_URL}/signup`,
         inputValue,
         {
           withCredentials: true,
@@ -39,7 +41,7 @@ const Signup = () => {
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
-         window.location.href = "https://zerodha-invest-app.onrender.com";
+          window.location.href = "https://zerodha-invest-app.onrender.com";
         }, 1000);
       } else {
         handleError(message);
