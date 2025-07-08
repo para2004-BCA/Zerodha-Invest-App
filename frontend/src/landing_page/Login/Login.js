@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [inputValue, setInputValue] = useState({
@@ -25,26 +25,27 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const {data} = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/login`,
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/login`,
         inputValue,
         { withCredentials: true }
       );
 
-      const { success, message } = data;
+      const { success, message } = res.data;
 
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
           window.location.href = "https://zerodha-invest-app.onrender.com";
-        }, 1000);
+        }, 1500);
       } else {
         handleError(message);
       }
-    } catch (error) {
-      console.error(error);
-      handleError("Login failed!");
+    } catch (err) {
+      console.error("Login failed:", err);
+      handleError("Login failed. Please try again.");
     }
 
     setInputValue({ email: "", password: "" });
