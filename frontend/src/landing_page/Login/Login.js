@@ -26,13 +26,13 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
+      const {data} = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/login`,
         inputValue,
         { withCredentials: true }
       );
 
-      const { success, message } = response.data;
+      const { success, message } = data;
 
       if (success) {
         handleSuccess(message);
