@@ -21,8 +21,8 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://zerodha-invest-app-frontend.onrender.com",
-      "https://zerodha-invest-app-dashboard.onrender.com"
+       "https://zerodha-invest-app-frontend.onrender.com",
+      "https://zerodha-invest-app.onrender.com"
     ],
     credentials: true,
   })
