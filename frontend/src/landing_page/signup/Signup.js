@@ -28,12 +28,11 @@ const Signup = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `https://zerodha-invest-app-backend.onrender.com`,
+        `${process.env.REACT_APP_BACKEND_URL}/signup`,
+        form,
         {
-          ...inputValue,
-          createdAt: new Date(),
-        },
-        { withCredentials: true }
+          withCredentials: true,
+        }
       );
 
       const { success, message } = data;
