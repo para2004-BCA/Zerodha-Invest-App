@@ -27,7 +27,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `https://zerodha-invest-app-backend.onrender.com/`,
+        `https://zerodha-invest-app-backend.onrender.com`,
         inputValue,
         { withCredentials: true }
       );
@@ -36,7 +36,7 @@ const Login = () => {
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
-          window.location.href = "http://localhost:5000";
+          window.location.href = "https://zerodha-invest-app.onrender.com";
 
         }, 1000);
       } else {

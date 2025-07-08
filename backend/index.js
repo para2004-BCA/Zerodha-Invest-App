@@ -19,7 +19,7 @@ const app = express();
 // ✅ CORS setup before any route or body parser
 app.use(
   cors({
-    origin: ["http://localhost:5000", "http://localhost:3000", "http://localhost:3001"],
+    origin: ["https://zerodha-invest-app-frontend.onrender.com", "https://zerodha-invest-app.onrender.com"],
     credentials: true,
   })
 );
